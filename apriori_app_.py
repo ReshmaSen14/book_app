@@ -78,6 +78,17 @@ if uploaded_file is not None:
             plt.grid(True, linestyle='--', alpha=0.6)
             st.pyplot(fig)
 
+            # Barplot of Top 10 Rules by Lift
+            st.write("### Top 10 Rules (by Lift)")
+            top_rules = rules.nlargest(10, 'lift')
+            fig, ax = plt.subplots(figsize=(10, 5))
+            sns.barplot(data=top_rules, x='lift', y='antecedents', hue='consequents', dodge=False, palette='viridis')
+            plt.xlabel("Lift")
+            plt.ylabel("Antecedents")
+            plt.title("Top 10 Association Rules by Lift")
+            plt.legend(title='Consequents', bbox_to_anchor=(1, 1))
+            st.pyplot(fig)
+
         else:
             st.warning(" No rules found with the selected parameters. Try reducing thresholds.")
 else:

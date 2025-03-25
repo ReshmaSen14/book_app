@@ -60,6 +60,28 @@ if uploaded_file is not None:
             # Visualizations
             st.write("### Rule Insights")
 
+            # Heatmap of Support vs Confidence
+            st.write("### Heatmap of Support for Antecedents & Consequents")
+            plt.figure(figsize=(10, 8))
+            pivot_table = rules.pivot_table(index="antecedents", columns="consequents", values="support", aggfunc="mean")
+            sns.heatmap(pivot_table, cmap="coolwarm", annot=True, fmt=".2f", linewidths=0.5)
+            plt.title("Support Heatmap", fontsize=14)
+            plt.xticks(rotation=45, ha="right", fontsize=10)  # Rotate x-axis labels
+            plt.yticks(fontsize=10)
+            plt.tight_layout()
+            st.pyplot(plt)
+            
+            # Barplot of Top 10 Rules by Lift
+            st.write("### Top 10 Rules (by Lift)")
+            top_rules = rules.nlargest(10, 'lift')
+            fig, ax = plt.subplots(figsize=(10, 5))
+            sns.barplot(data=top_rules, x='lift', y='antecedents', hue='consequents', dodge=False, palette='viridis')
+            plt.xlabel("Lift")
+            plt.ylabel("Antecedents")
+            plt.title("Top 10 Association Rules by Lift")
+            plt.legend(title='Consequents', bbox_to_anchor=(1, 1))
+            st.pyplot(fig)
+            
             # Scatter Plot: Support vs Confidence
             fig, ax = plt.subplots(figsize=(8, 5))
             sns.scatterplot(data=rules, x='support', y='confidence', alpha=0.6, s=80, marker='o', ax=ax)
@@ -76,17 +98,6 @@ if uploaded_file is not None:
             plt.ylabel("Lift")
             plt.title("Lift vs. Confidence")
             plt.grid(True, linestyle='--', alpha=0.6)
-            st.pyplot(fig)
-
-            # Barplot of Top 10 Rules by Lift
-            st.write("### Top 10 Rules (by Lift)")
-            top_rules = rules.nlargest(10, 'lift')
-            fig, ax = plt.subplots(figsize=(10, 5))
-            sns.barplot(data=top_rules, x='lift', y='antecedents', hue='consequents', dodge=False, palette='viridis')
-            plt.xlabel("Lift")
-            plt.ylabel("Antecedents")
-            plt.title("Top 10 Association Rules by Lift")
-            plt.legend(title='Consequents', bbox_to_anchor=(1, 1))
             st.pyplot(fig)
 
         else:
